@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
@@ -138,13 +139,24 @@ function BarChart() {
                   return entry.type === TickType.major;
                 });
 
+                const majorTicksOdd = majorTicks.filter((v, i) => {
+                  return i % 2 === 1;
+                });
+
+                const majorTicksEven = majorTicks.filter((v, i) => {
+                  return i % 2 === 0;
+                });
+
+                console.log(majorTicks);
+                console.log(majorTicksOdd);
+
                 const minorTicks = xTickValues.filter((v, i) => {
                   const entry = data[i];
                   return entry.type === TickType.minor;
                 });
 
-                const xAxis = chart
-                  .selectAll(".x-axis-major")
+                const xAxisEven = chart
+                  .selectAll(".x-axis-major-even")
                   .data([null])
                   .join("g")
                   .attr(
@@ -153,16 +165,41 @@ function BarChart() {
                       barAreaHeightUC + bottomOffSetUC / 2
                     })`
                   )
-                  .attr("class", "x-axis-major")
+                  .attr("class", "x-axis-major-even")
                   .call(
                     axisBottom(x)
-                      .tickValues(majorTicks)
+                      .tickValues(majorTicksEven)
                       .tickSize(10)
                       .tickFormat(format(""))
                   );
 
+                const xAxisOdd = chart
+                  .selectAll(".x-axis-major-odd")
+                  .data([null])
+                  .join("g")
+                  .attr(
+                    "transform",
+                    `translate(${leftOffSetUC / 2},${
+                      barAreaHeightUC + bottomOffSetUC / 2
+                    })`
+                  )
+                  .attr("class", "x-axis-major-even")
+                  .call(
+                    axisBottom(x)
+                      .tickValues(majorTicksOdd)
+                      .tickSize(15)
+                      .tickFormat(format(""))
+                  );
+
                 // Add the class 'minor' to all minor ticks
-                xAxis
+                xAxisEven
+                  .selectAll("g")
+                  .filter(function (d, i) {
+                    return majorTicks[i].type === TickType.major;
+                  })
+                  .style("stroke-width", "3px")
+                  .attr("y2", "12");
+                xAxisOdd
                   .selectAll("g")
                   .filter(function (d, i) {
                     return majorTicks[i].type === TickType.major;

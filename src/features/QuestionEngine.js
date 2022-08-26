@@ -193,7 +193,6 @@ export class QuestionEngine {
       treatment.interaction === InteractionType.none ||
       treatment.interaction === InteractionType.drag
     ) {
-      console.log("incNextQuestion");
       this.incNextQuestion(state);
     } else if (treatment.interaction === InteractionType.titration) {
       const titrationAmount = this.calcTitrationAmount(
@@ -206,7 +205,6 @@ export class QuestionEngine {
       this.updateHighupOrLowdown(state);
       // TODO we need a termination condition for runaway titration
       if (state.lowdown - state.highup <= 10) {
-        console.log("incNextQuestion");
         this.incNextQuestion(state);
       } else {
         const newAmount = this.calcNewAmount(state, titrationAmount);
